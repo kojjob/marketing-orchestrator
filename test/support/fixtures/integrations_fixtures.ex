@@ -10,13 +10,13 @@ defmodule GrowthOs.IntegrationsFixtures do
   Generate a integration.
   """
   def integration_fixture(scope, attrs \\ %{}) do
-    tenant = tenant_fixture(scope)
+    tenant_id = attrs[:tenant_id] || tenant_fixture(scope).id
     attrs =
       Enum.into(attrs, %{
         config: %{},
         provider: "some provider",
         status: "some status",
-        tenant_id: tenant.id
+        tenant_id: tenant_id
       })
 
     {:ok, integration} = GrowthOs.Integrations.create_integration(scope, attrs)
@@ -27,13 +27,15 @@ defmodule GrowthOs.IntegrationsFixtures do
   Generate a credential.
   """
   def credential_fixture(scope, attrs \\ %{}) do
-    integration = integration_fixture(scope)
+    integration = attrs[:integration] || integration_fixture(scope, attrs)
+    tenant_id = attrs[:tenant_id] || integration.tenant_id
+    
     attrs =
       Enum.into(attrs, %{
         encrypted_blob: "some encrypted_blob",
         rotated_at: ~U[2025-12-25 06:24:00Z],
         integration_id: integration.id,
-        tenant_id: integration.tenant_id
+        tenant_id: tenant_id
       })
 
     {:ok, credential} = GrowthOs.Integrations.create_credential(scope, attrs)
@@ -44,13 +46,13 @@ defmodule GrowthOs.IntegrationsFixtures do
   Generate a webhook.
   """
   def webhook_fixture(scope, attrs \\ %{}) do
-    tenant = tenant_fixture(scope)
+    tenant_id = attrs[:tenant_id] || tenant_fixture(scope).id
     attrs =
       Enum.into(attrs, %{
         provider: "some provider",
         secret: "some secret",
         status: "some status",
-        tenant_id: tenant.id
+        tenant_id: tenant_id
       })
 
     {:ok, webhook} = GrowthOs.Integrations.create_webhook(scope, attrs)
@@ -61,7 +63,9 @@ defmodule GrowthOs.IntegrationsFixtures do
   Generate a sync_job.
   """
   def sync_job_fixture(scope, attrs \\ %{}) do
-    integration = integration_fixture(scope)
+    integration = attrs[:integration] || integration_fixture(scope, attrs)
+    tenant_id = attrs[:tenant_id] || integration.tenant_id
+
     attrs =
       Enum.into(attrs, %{
         finished_at: ~U[2025-12-25 06:30:00Z],
@@ -69,7 +73,7 @@ defmodule GrowthOs.IntegrationsFixtures do
         stats: %{},
         status: "some status",
         integration_id: integration.id,
-        tenant_id: integration.tenant_id
+        tenant_id: tenant_id
       })
 
     {:ok, sync_job} = GrowthOs.Integrations.create_sync_job(scope, attrs)
