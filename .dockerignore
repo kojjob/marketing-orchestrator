@@ -1,0 +1,14 @@
+.git
+.gitignore
+.DS_Store
+.tool-versions
+Dockerfile
+.dockerignore
+build
+_build
+deps
+doc
+docs
+priv/static
+test
+tmp
